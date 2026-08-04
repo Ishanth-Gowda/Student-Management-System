@@ -1,73 +1,36 @@
-# Welcome to your Lovable project
+# Student Management Portal
 
-## Project info
+I want to create an amazing slide making app in Lovable. 
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Core ideas/architecture:
+1. All slides have locked size/aspect ratio. Should look similar at whatever zoom I look into it (no dynamic reizing weidness). PDF-style
+2. Commenting functionality (overlay on top of slides). Resolution/threads
+3. See all slides on left bar (iframe or similar? Idk)
+4. Be able to reorder slides (via storing the slide HTML → supabase link)
+5. Slide structure should be powerful but very flexible. People will eg generate competely custom animations, charts etc... But w estill want to make sure some basic things are easy to do and consistent. Eg title slides, title location, positinoning. Should ideally be fixed. Perhaps some kind of cooridnate system + 10 high level templates for how 'components' cna be poisitione,d hten components can be anything (or something of preselted?) Help me create right abstraction here 
+6. Create new slide functionality in the Left slide left bar. When doing that you have option to just 'enter desription' of slide to supabase. When you do that,  lovable will be able to ready supabase later and improve on the slides. later when using the chat
+7. Start off with a bunch of example slides showcasing the functionality, content etc... 
+8. Setup a basic CMS in supabase. All strings should be from there
+9. Document your setup throughly in setup.md. This will be later used to create reusale template from this project 
+10. Each slide should aim to be very inependent from others → changing one wont change others easily to make agent easier to rason about
 
-## How can I edit this code?
+This project was built with [Lovable](https://lovable.dev).
 
-There are several ways of editing your application.
+## Build with Lovable
 
-**Use Lovable**
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a4168254-3654-4d1f-85b9-45941bfa2d1d).
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
-Changes made via Lovable will be committed automatically to this repo.
+## Development
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+git clone <this-repository-url>
+cd <repository-name>
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
