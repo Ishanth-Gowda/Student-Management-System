@@ -219,10 +219,19 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
 /* --------------------------------- Upload -------------------------------- */
 
+/** Uploads to the private avatars bucket and returns the storage path. */
 export async function uploadAvatar(file: File, folder: string) {
   const ext = file.name.split(".").pop();
   const path = `${folder}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
   if (error) throw error;
-  return supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+  return path;
+}
+
+/** Resolves a stored avatar path (or absolute URL) into a displayable URL. */
+export async function resolveAvatarUrl(path: string | null): Promise<string | null> {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  const { data } = await supabase.storage.from("avatars").createSignedUrl(path, 60 * 60);
+  return data?.signedUrl ?? null;
 }
