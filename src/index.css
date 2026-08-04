@@ -109,3 +109,11 @@ body {
   .sms-sidebar, .sms-topbar, .sms-no-print { display: none !important; }
   body { background: #fff; }
 }
+
+.sms-sidebar-open {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1045;
+}

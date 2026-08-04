@@ -82,8 +82,7 @@ export function DashboardLayout() {
     <div className="d-flex">
       {/* Sidebar */}
       <aside
-        className={`sms-sidebar p-3 flex-shrink-0 position-fixed position-lg-static top-0 start-0 ${open ? "d-block" : "d-none"} d-lg-block`}
-        style={{ zIndex: 1045 }}
+        className={`sms-sidebar p-3 flex-shrink-0 ${open ? "sms-sidebar-open" : "d-none"} d-lg-block`}
       >
         <div className="d-flex align-items-center gap-2 mb-4 px-1">
           <span className="badge bg-primary rounded-3 p-2 fs-6">SMS</span>
