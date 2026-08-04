@@ -10,31 +10,237 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.15"
   }
   public: {
     Tables: {
-      presenter_notes: {
+      activity_logs: {
         Row: {
-          content: string
+          action: string
+          actor_name: string | null
           created_at: string
+          description: string | null
+          entity_id: string | null
+          entity_type: string | null
           id: string
-          slide_id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_name?: string | null
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_name?: string | null
+          created_at?: string
+          description?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      departments: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
           updated_at: string
         }
         Insert: {
-          content?: string
+          code: string
           created_at?: string
+          description?: string | null
           id?: string
-          slide_id: string
+          name: string
           updated_at?: string
         }
         Update: {
-          content?: string
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      students: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          admission_date: string | null
+          alternate_phone: string | null
+          blood_group: string | null
+          city: string | null
+          country: string | null
+          course: string | null
+          created_at: string
+          date_of_birth: string | null
+          deleted_at: string | null
+          department_id: string | null
+          email: string
+          emergency_contact: string | null
+          first_name: string
+          gender: string | null
+          guardian_name: string | null
+          guardian_phone: string | null
+          id: string
+          last_name: string
+          notes: string | null
+          parent_name: string | null
+          parent_phone: string | null
+          phone: string | null
+          photo_url: string | null
+          roll_number: string | null
+          semester: number | null
+          state: string | null
+          status: string
+          student_id: string
+          updated_at: string
+          user_id: string | null
+          year: number | null
+          zip_code: string | null
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          admission_date?: string | null
+          alternate_phone?: string | null
+          blood_group?: string | null
+          city?: string | null
+          country?: string | null
+          course?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          deleted_at?: string | null
+          department_id?: string | null
+          email: string
+          emergency_contact?: string | null
+          first_name: string
+          gender?: string | null
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          id?: string
+          last_name: string
+          notes?: string | null
+          parent_name?: string | null
+          parent_phone?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          roll_number?: string | null
+          semester?: number | null
+          state?: string | null
+          status?: string
+          student_id: string
+          updated_at?: string
+          user_id?: string | null
+          year?: number | null
+          zip_code?: string | null
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          admission_date?: string | null
+          alternate_phone?: string | null
+          blood_group?: string | null
+          city?: string | null
+          country?: string | null
+          course?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          deleted_at?: string | null
+          department_id?: string | null
+          email?: string
+          emergency_contact?: string | null
+          first_name?: string
+          gender?: string | null
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          id?: string
+          last_name?: string
+          notes?: string | null
+          parent_name?: string | null
+          parent_phone?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          roll_number?: string | null
+          semester?: number | null
+          state?: string | null
+          status?: string
+          student_id?: string
+          updated_at?: string
+          user_id?: string | null
+          year?: number | null
+          zip_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
           created_at?: string
           id?: string
-          slide_id?: string
-          updated_at?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -43,10 +249,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "student"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -173,6 +385,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "student"],
+    },
   },
 } as const
