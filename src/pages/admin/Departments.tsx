@@ -57,7 +57,11 @@ export default function Departments() {
     setErrors({});
     setBusy(true);
     try {
-      const payload = { ...parsed.data, code: parsed.data.code.toUpperCase() };
+      const payload = {
+        name: parsed.data.name,
+        code: parsed.data.code.toUpperCase(),
+        description: parsed.data.description,
+      };
       if (editing) {
         await updateDepartment(editing.id, payload);
         toast.success("Department updated");
