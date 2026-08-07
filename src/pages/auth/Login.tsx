@@ -35,7 +35,9 @@ export default function Login() {
       await signIn(parsed.data.email, parsed.data.password, remember);
       toast.success("Welcome back!");
       const from = (location.state as { from?: string } | null)?.from;
-      navigate(from ?? "/", { replace: true });
+      const blocked = ["/login", "/signup", "/forgot-password", "/reset-password", "/403"];
+      navigate(from && !blocked.includes(from) ? from : "/", { replace: true });
+
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unable to sign in";
       toast.error(message.includes("Invalid login") ? "Incorrect email or password" : message);

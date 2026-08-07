@@ -26,7 +26,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
-  const [loading, setLoading] = useState(true);
+  // `sessionLoading` = we don't know yet if there is a session.
+  // `metaLoading` = we have a user but their role/profile isn't loaded yet.
+  // Both must resolve before routes may evaluate role-based access.
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const [metaLoading, setMetaLoading] = useState(true);
 
   const loadUserMeta = useCallback(async (userId: string) => {
     const [profileRes, roleRes] = await Promise.all([
@@ -41,30 +45,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
       setUser(nextSession?.user ?? null);
+      setSessionLoading(false);
       if (!nextSession?.user) {
         setProfile(null);
         setRole(null);
-        setLoading(false);
+        setMetaLoading(false);
         return;
       }
+      // Block role-dependent routing until the role is known (prevents a
+      // wrong redirect + flash of the 403 page right after sign-in).
+      setMetaLoading(true);
       // Defer supabase calls out of the callback to avoid deadlocks.
       setTimeout(() => {
-        loadUserMeta(nextSession.user.id).finally(() => setLoading(false));
+        loadUserMeta(nextSession.user.id).finally(() => setMetaLoading(false));
       }, 0);
     });
 
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setUser(data.session?.user ?? null);
+      setSessionLoading(false);
       if (data.session?.user) {
-        loadUserMeta(data.session.user.id).finally(() => setLoading(false));
+        loadUserMeta(data.session.user.id).finally(() => setMetaLoading(false));
       } else {
-        setLoading(false);
+        setProfile(null);
+        setRole(null);
+        setMetaLoading(false);
       }
     });
 
     return () => sub.subscription.unsubscribe();
   }, [loadUserMeta]);
+
+  const loading = sessionLoading || (!!user && metaLoading);
+
 
   const logActivity = useCallback(async (action: string, description: string, userId: string, actorName?: string | null) => {
     await supabase.from("activity_logs").insert({

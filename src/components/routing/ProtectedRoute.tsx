@@ -9,7 +9,9 @@ export function ProtectedRoute({ children, roles }: { children: React.ReactNode;
 
   if (loading) return <Loader label="Checking your session..." />;
   if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />;
-  if (roles && role && !roles.includes(role)) return <Navigate to="/403" replace />;
+  // `loading` already guarantees the role has been resolved, so a mismatch here is real.
+  if (roles && !roles.includes(role as AppRole)) return <Navigate to="/403" replace />;
+
   return <>{children}</>;
 }
 
