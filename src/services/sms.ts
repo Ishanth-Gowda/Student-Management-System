@@ -95,9 +95,27 @@ export async function getStudent(id: string): Promise<Student | null> {
 }
 
 export async function getStudentByUserId(userId: string): Promise<Student | null> {
-  const { data, error } = await supabase.from("students").select(STUDENT_SELECT).eq("user_id", userId).maybeSingle();
+  const { data, error } = await supabase
+    .from("students")
+    .select(STUDENT_SELECT)
+    .eq("user_id", userId)
+    .is("deleted_at", null)
+    .maybeSingle();
   if (error) throw error;
-  return (data as Student) ?? null;
+  if (data) return data as Student;
+
+  // Record may have been created by an admin before the student signed up, so it
+  // isn't linked yet. Link it by email, then re-fetch.
+  const { data: linkedId } = await supabase.rpc("link_my_student_record");
+  if (!linkedId) return null;
+
+  const { data: linked, error: linkedError } = await supabase
+    .from("students")
+    .select(STUDENT_SELECT)
+    .eq("id", linkedId as string)
+    .maybeSingle();
+  if (linkedError) throw linkedError;
+  return (linked as Student) ?? null;
 }
 
 export async function generateStudentId(): Promise<string> {
