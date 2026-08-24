@@ -128,6 +128,57 @@ export default function StudentDashboard() {
             </div>
           </div>
 
+          <div className="card sms-card mb-4">
+            <div className="card-header bg-transparent d-flex align-items-center justify-content-between">
+              <span className="fw-semibold">My attendance</span>
+              {summary && summary.total > 0 && (
+                <span className="badge bg-primary-subtle text-primary-emphasis">{summary.percentage}% attendance</span>
+              )}
+            </div>
+            <div className="card-body">
+              {!summary || summary.total === 0 ? (
+                <p className="text-secondary small mb-0">No attendance has been recorded for you yet.</p>
+              ) : (
+                <>
+                  <div className="progress mb-3" role="progressbar" aria-label="Attendance percentage" aria-valuenow={summary.percentage} aria-valuemin={0} aria-valuemax={100} style={{ height: 8 }}>
+                    <div className="progress-bar bg-success" style={{ width: `${summary.percentage}%` }} />
+                  </div>
+                  <div className="d-flex flex-wrap gap-2 mb-3 small">
+                    <span className="badge bg-success-subtle text-success-emphasis">Present: {summary.present}</span>
+                    <span className="badge bg-warning-subtle text-warning-emphasis">Late: {summary.late}</span>
+                    <span className="badge bg-danger-subtle text-danger-emphasis">Absent: {summary.absent}</span>
+                    <span className="badge bg-secondary-subtle text-secondary-emphasis">Excused: {summary.excused}</span>
+                    <span className="badge bg-light text-secondary-emphasis border">Records: {summary.total}</span>
+                  </div>
+                  <div className="table-responsive">
+                    <table className="table table-sm align-middle mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th scope="col">Date</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Remarks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {attendance.slice(0, 10).map((a) => (
+                          <tr key={a.id}>
+                            <td className="small">{new Date(a.date).toLocaleDateString()}</td>
+                            <td>
+                              <span className={`badge ${STATUS_CLASS[a.status] ?? "bg-secondary-subtle text-secondary-emphasis"}`}>
+                                {a.status}
+                              </span>
+                            </td>
+                            <td className="small text-secondary">{a.remarks || "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
           <div className="row g-3">
             <div className="col-12 col-lg-6">
               <div className="card sms-card h-100">
