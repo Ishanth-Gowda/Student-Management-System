@@ -4,20 +4,42 @@ import { BsBuilding, BsCalendarCheck, BsMortarboard, BsPersonCircle } from "reac
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar } from "@/components/common/Avatar";
 import { CardSkeleton, EmptyState } from "@/components/common/Feedback";
-import { getStudentByUserId } from "@/services/sms";
-import type { Student } from "@/types";
+import { getStudentByUserId, listAttendanceForStudent, summarizeAttendance } from "@/services/sms";
+import type { Attendance, AttendanceSummary, Student } from "@/types";
+
+const STATUS_CLASS: Record<string, string> = {
+  Present: "bg-success-subtle text-success-emphasis",
+  Absent: "bg-danger-subtle text-danger-emphasis",
+  Late: "bg-warning-subtle text-warning-emphasis",
+  Excused: "bg-secondary-subtle text-secondary-emphasis",
+};
 
 export default function StudentDashboard() {
   const { user, profile } = useAuth();
   const [student, setStudent] = useState<Student | null>(null);
+  const [attendance, setAttendance] = useState<Attendance[]>([]);
+  const [summary, setSummary] = useState<AttendanceSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
+    let active = true;
     getStudentByUserId(user.id)
-      .then(setStudent)
+      .then(async (record) => {
+        if (!active) return;
+        setStudent(record);
+        if (record) {
+          const rows = await listAttendanceForStudent(record.id).catch(() => [] as Attendance[]);
+          if (!active) return;
+          setAttendance(rows);
+          setSummary(summarizeAttendance(rows));
+        }
+      })
       .catch(() => setStudent(null))
-      .finally(() => setLoading(false));
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
   }, [user]);
 
   if (loading) {
