@@ -12,6 +12,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Departments from "./pages/admin/Departments";
+import Attendance from "./pages/admin/Attendance";
 import StudentList from "./pages/students/StudentList";
 import StudentForm from "./pages/students/StudentForm";
 import StudentDetail from "./pages/students/StudentDetail";
@@ -80,6 +81,14 @@ const App = () => (
               element={
                 <ProtectedRoute roles={["admin"]}>
                   <Departments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/attendance"
+              element={
+                <ProtectedRoute roles={["admin"]}>
+                  <Attendance />
                 </ProtectedRoute>
               }
             />

@@ -4,6 +4,7 @@ import {
   BsBell,
   BsBoxArrowRight,
   BsBuilding,
+  BsCalendarCheck,
   BsGear,
   BsGrid1X2,
   BsList,
@@ -25,6 +26,7 @@ const LABELS: Record<string, string> = {
   student: "Dashboard",
   students: "Students",
   departments: "Departments",
+  attendance: "Attendance",
   profile: "Profile",
   settings: "Settings",
   new: "Add Student",
@@ -68,6 +70,7 @@ export function DashboardLayout() {
     ? [
         { to: "/admin", label: "Dashboard", icon: BsGrid1X2 },
         { to: "/students", label: "Students", icon: BsPeople },
+        { to: "/attendance", label: "Attendance", icon: BsCalendarCheck },
         { to: "/departments", label: "Departments", icon: BsBuilding },
         { to: "/profile", label: "Profile", icon: BsPersonCircle },
         { to: "/settings", label: "Settings", icon: BsGear },
