@@ -81,3 +81,26 @@ export interface StudentFilters {
   page?: number;
   pageSize?: number;
 }
+
+export type AttendanceStatus = "Present" | "Absent" | "Late" | "Excused";
+
+export interface Attendance {
+  id: string;
+  student_id: string;
+  date: string;
+  status: string;
+  remarks: string | null;
+  marked_by: string | null;
+  created_at: string;
+  updated_at: string;
+  students?: { id: string; first_name: string; last_name: string; student_id: string } | null;
+}
+
+export interface AttendanceSummary {
+  total: number;
+  present: number;
+  absent: number;
+  late: number;
+  excused: number;
+  percentage: number;
+}

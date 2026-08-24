@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { ActivityLog, Department, Student, StudentFilters } from "@/types";
+import type { ActivityLog, Attendance, AttendanceStatus, AttendanceSummary, Department, Student, StudentFilters } from "@/types";
 
 const STUDENT_SELECT = "*, departments(id, name, code)";
 
@@ -252,4 +252,87 @@ export async function resolveAvatarUrl(path: string | null): Promise<string | nu
   if (path.startsWith("http")) return path;
   const { data } = await supabase.storage.from("avatars").createSignedUrl(path, 60 * 60);
   return data?.signedUrl ?? null;
+}
+
+/* ------------------------------ Attendance ------------------------------- */
+
+export const ATTENDANCE_STATUSES: AttendanceStatus[] = ["Present", "Absent", "Late", "Excused"];
+
+/** Attendance rows for a single date, keyed by student id. */
+export async function getAttendanceForDate(date: string): Promise<Record<string, Attendance>> {
+  const { data, error } = await supabase.from("attendance").select("*").eq("date", date);
+  if (error) throw error;
+  const map: Record<string, Attendance> = {};
+  for (const row of (data ?? []) as Attendance[]) map[row.student_id] = row;
+  return map;
+}
+
+export async function saveAttendance(
+  date: string,
+  entries: { student_id: string; status: AttendanceStatus; remarks?: string | null }[],
+) {
+  if (entries.length === 0) return;
+  const { data: auth } = await supabase.auth.getUser();
+  const payload = entries.map((e) => ({
+    student_id: e.student_id,
+    date,
+    status: e.status,
+    remarks: e.remarks ?? null,
+    marked_by: auth.user?.id ?? null,
+  }));
+  const { error } = await supabase.from("attendance").upsert(payload, { onConflict: "student_id,date" });
+  if (error) throw error;
+  await logActivity("attendance_marked", `Attendance saved for ${entries.length} student(s) on ${date}`, "attendance", date);
+}
+
+export async function listAttendanceForStudent(studentId: string, limit = 60): Promise<Attendance[]> {
+  const { data, error } = await supabase
+    .from("attendance")
+    .select("*")
+    .eq("student_id", studentId)
+    .order("date", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as Attendance[];
+}
+
+export function summarizeAttendance(rows: Attendance[]): AttendanceSummary {
+  const count = (s: string) => rows.filter((r) => r.status === s).length;
+  const present = count("Present");
+  const late = count("Late");
+  const excused = count("Excused");
+  const absent = count("Absent");
+  const total = rows.length;
+  return {
+    total,
+    present,
+    absent,
+    late,
+    excused,
+    percentage: total ? Math.round(((present + late) / total) * 100) : 0,
+  };
+}
+
+export async function getAttendanceOverview(days = 14) {
+  const since = new Date();
+  since.setDate(since.getDate() - (days - 1));
+  const sinceStr = since.toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("attendance")
+    .select("date, status")
+    .gte("date", sinceStr)
+    .order("date");
+  if (error) throw error;
+  const rows = (data ?? []) as { date: string; status: string }[];
+  const byDate = new Map<string, { present: number; total: number }>();
+  for (const r of rows) {
+    const entry = byDate.get(r.date) ?? { present: 0, total: 0 };
+    entry.total += 1;
+    if (r.status === "Present" || r.status === "Late") entry.present += 1;
+    byDate.set(r.date, entry);
+  }
+  return Array.from(byDate.entries()).map(([date, v]) => ({
+    date: new Date(date).toLocaleDateString("en", { month: "short", day: "numeric" }),
+    percentage: v.total ? Math.round((v.present / v.total) * 100) : 0,
+  }));
 }
