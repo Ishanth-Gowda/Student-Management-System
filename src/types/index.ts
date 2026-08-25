@@ -104,3 +104,60 @@ export interface AttendanceSummary {
   excused: number;
   percentage: number;
 }
+
+export type ExamType = "Internal" | "Midterm" | "Semester" | "Practical" | "Assignment";
+
+export interface Exam {
+  id: string;
+  title: string;
+  exam_type: string;
+  department_id: string | null;
+  semester: number | null;
+  academic_year: string | null;
+  exam_date: string | null;
+  max_marks: number;
+  published: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+  departments?: { id: string; name: string; code: string } | null;
+}
+
+export interface Mark {
+  id: string;
+  exam_id: string;
+  student_id: string;
+  subject_name: string;
+  subject_code: string | null;
+  credits: number;
+  marks_obtained: number | null;
+  max_marks: number;
+  remarks: string | null;
+  created_at: string;
+  updated_at: string;
+  exams?: Exam | null;
+}
+
+export interface GradePoint {
+  grade: string;
+  point: number;
+}
+
+export interface SubjectResult {
+  subject: string;
+  obtained: number;
+  max: number;
+  percentage: number;
+  grade: string;
+  point: number;
+  credits: number;
+}
+
+export interface ExamResult {
+  exam: Exam;
+  subjects: SubjectResult[];
+  totalObtained: number;
+  totalMax: number;
+  percentage: number;
+  gpa: number;
+}
