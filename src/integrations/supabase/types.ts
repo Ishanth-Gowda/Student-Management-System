@@ -115,6 +115,116 @@ export type Database = {
         }
         Relationships: []
       }
+      exams: {
+        Row: {
+          academic_year: string | null
+          created_at: string
+          created_by: string | null
+          department_id: string | null
+          exam_date: string | null
+          exam_type: string
+          id: string
+          max_marks: number
+          published: boolean
+          semester: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          academic_year?: string | null
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          exam_date?: string | null
+          exam_type?: string
+          id?: string
+          max_marks?: number
+          published?: boolean
+          semester?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string | null
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          exam_date?: string | null
+          exam_type?: string
+          id?: string
+          max_marks?: number
+          published?: boolean
+          semester?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exams_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marks: {
+        Row: {
+          created_at: string
+          credits: number
+          exam_id: string
+          id: string
+          marks_obtained: number | null
+          max_marks: number
+          remarks: string | null
+          student_id: string
+          subject_code: string | null
+          subject_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          exam_id: string
+          id?: string
+          marks_obtained?: number | null
+          max_marks?: number
+          remarks?: string | null
+          student_id: string
+          subject_code?: string | null
+          subject_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          exam_id?: string
+          id?: string
+          marks_obtained?: number | null
+          max_marks?: number
+          remarks?: string | null
+          student_id?: string
+          subject_code?: string | null
+          subject_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marks_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marks_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
