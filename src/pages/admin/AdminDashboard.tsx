@@ -15,10 +15,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { BsArrowUpRight, BsBuilding, BsJournalBookmark, BsPeople, BsPersonCheck, BsPersonPlus } from "react-icons/bs";
+import { BsArrowUpRight, BsAward, BsBuilding, BsJournalBookmark, BsPeople, BsPersonCheck, BsPersonPlus } from "react-icons/bs";
 import { getDashboardStats, listActivity, type DashboardStats } from "@/services/sms";
+import { listExams } from "@/services/marks";
 import { CardSkeleton, EmptyState } from "@/components/common/Feedback";
-import type { ActivityLog } from "@/types";
+import type { ActivityLog, Exam } from "@/types";
 
 const PIE_COLORS = ["#2563eb", "#16a34a", "#f59e0b", "#dc2626"];
 
