@@ -13,6 +13,9 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Departments from "./pages/admin/Departments";
 import Attendance from "./pages/admin/Attendance";
+import Exams from "./pages/admin/Exams";
+import MarksEntry from "./pages/admin/MarksEntry";
+import StudentResults from "./pages/student/Results";
 import StudentList from "./pages/students/StudentList";
 import StudentForm from "./pages/students/StudentForm";
 import StudentDetail from "./pages/students/StudentDetail";
@@ -125,10 +128,34 @@ const App = () => (
               }
             />
             <Route
+              path="/exams"
+              element={
+                <ProtectedRoute roles={["admin"]}>
+                  <Exams />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/exams/:id/marks"
+              element={
+                <ProtectedRoute roles={["admin"]}>
+                  <MarksEntry />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/student"
               element={
                 <ProtectedRoute roles={["student"]}>
                   <StudentDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/results"
+              element={
+                <ProtectedRoute roles={["student"]}>
+                  <StudentResults />
                 </ProtectedRoute>
               }
             />

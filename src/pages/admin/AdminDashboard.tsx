@@ -15,10 +15,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { BsArrowUpRight, BsBuilding, BsJournalBookmark, BsPeople, BsPersonCheck, BsPersonPlus } from "react-icons/bs";
+import { BsArrowUpRight, BsAward, BsBuilding, BsJournalBookmark, BsPeople, BsPersonCheck, BsPersonPlus } from "react-icons/bs";
 import { getDashboardStats, listActivity, type DashboardStats } from "@/services/sms";
+import { listExams } from "@/services/marks";
 import { CardSkeleton, EmptyState } from "@/components/common/Feedback";
-import type { ActivityLog } from "@/types";
+import type { ActivityLog, Exam } from "@/types";
 
 const PIE_COLORS = ["#2563eb", "#16a34a", "#f59e0b", "#dc2626"];
 
@@ -51,16 +52,18 @@ function StatCard({
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [activity, setActivity] = useState<ActivityLog[]>([]);
+  const [exams, setExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let alive = true;
-    Promise.all([getDashboardStats(), listActivity(8)])
-      .then(([s, a]) => {
+    Promise.all([getDashboardStats(), listActivity(8), listExams().catch(() => [] as Exam[])])
+      .then(([s, a, e]) => {
         if (!alive) return;
         setStats(s);
         setActivity(a);
+        setExams(e);
       })
       .catch((e) => alive && setError(e instanceof Error ? e.message : "Failed to load dashboard"))
       .finally(() => alive && setLoading(false));
@@ -104,6 +107,50 @@ export default function AdminDashboard() {
         <StatCard label="Departments" value={stats.departments} icon={<BsBuilding />} tone="warning" />
         <StatCard label="Courses" value={stats.courses} icon={<BsJournalBookmark />} tone="info" />
       </div>
+
+      <div className="card sms-card mb-4">
+        <div className="card-header bg-transparent fw-semibold d-flex justify-content-between align-items-center">
+          Examinations &amp; results
+          <Link to="/exams" className="small text-decoration-none">
+            Manage exams <BsArrowUpRight />
+          </Link>
+        </div>
+        <div className="card-body">
+          <div className="d-flex flex-wrap gap-2 mb-3 small">
+            <span className="badge bg-primary-subtle text-primary-emphasis">Total exams: {exams.length}</span>
+            <span className="badge bg-success-subtle text-success-emphasis">
+              Published: {exams.filter((e) => e.published).length}
+            </span>
+            <span className="badge bg-warning-subtle text-warning-emphasis">
+              Drafts: {exams.filter((e) => !e.published).length}
+            </span>
+          </div>
+          {exams.length === 0 ? (
+            <p className="text-secondary small mb-0">No examinations created yet.</p>
+          ) : (
+            <ul className="list-group list-group-flush">
+              {exams.slice(0, 4).map((e) => (
+                <li className="list-group-item d-flex justify-content-between align-items-center px-0" key={e.id}>
+                  <span className="small">
+                    <BsAward className="me-2 text-secondary" aria-hidden="true" />
+                    {e.title}
+                    <span className="text-secondary"> · {e.exam_type}</span>
+                  </span>
+                  <span className="d-flex align-items-center gap-2">
+                    <span className={`badge ${e.published ? "bg-success-subtle text-success-emphasis" : "bg-secondary-subtle text-secondary-emphasis"}`}>
+                      {e.published ? "Published" : "Draft"}
+                    </span>
+                    <Link to={`/exams/${e.id}/marks`} className="btn btn-outline-secondary btn-sm">
+                      Marks
+                    </Link>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
 
       <div className="row g-3 mb-4">
         <div className="col-12 col-lg-8">

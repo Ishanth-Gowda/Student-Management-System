@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
+  BsAward,
   BsBell,
   BsBoxArrowRight,
   BsBuilding,
@@ -27,6 +28,9 @@ const LABELS: Record<string, string> = {
   students: "Students",
   departments: "Departments",
   attendance: "Attendance",
+  exams: "Exams",
+  marks: "Marks entry",
+  results: "My results",
   profile: "Profile",
   settings: "Settings",
   new: "Add Student",
@@ -71,12 +75,14 @@ export function DashboardLayout() {
         { to: "/admin", label: "Dashboard", icon: BsGrid1X2 },
         { to: "/students", label: "Students", icon: BsPeople },
         { to: "/attendance", label: "Attendance", icon: BsCalendarCheck },
+        { to: "/exams", label: "Exams & marks", icon: BsAward },
         { to: "/departments", label: "Departments", icon: BsBuilding },
         { to: "/profile", label: "Profile", icon: BsPersonCircle },
         { to: "/settings", label: "Settings", icon: BsGear },
       ]
     : [
         { to: "/student", label: "Dashboard", icon: BsGrid1X2 },
+        { to: "/student/results", label: "My results", icon: BsAward },
         { to: "/profile", label: "Profile", icon: BsPersonCircle },
         { to: "/settings", label: "Settings", icon: BsGear },
       ];

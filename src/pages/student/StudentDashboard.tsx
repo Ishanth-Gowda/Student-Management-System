@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BsBuilding, BsCalendarCheck, BsMortarboard, BsPersonCircle } from "react-icons/bs";
+import { BsAward, BsBuilding, BsCalendarCheck, BsMortarboard, BsPersonCircle } from "react-icons/bs";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar } from "@/components/common/Avatar";
 import { CardSkeleton, EmptyState } from "@/components/common/Feedback";
 import { getStudentByUserId, listAttendanceForStudent, summarizeAttendance } from "@/services/sms";
-import type { Attendance, AttendanceSummary, Student } from "@/types";
+import { buildResults, listMarksForStudent } from "@/services/marks";
+import type { Attendance, AttendanceSummary, ExamResult, Student } from "@/types";
 
 const STATUS_CLASS: Record<string, string> = {
   Present: "bg-success-subtle text-success-emphasis",
@@ -19,6 +20,8 @@ export default function StudentDashboard() {
   const [student, setStudent] = useState<Student | null>(null);
   const [attendance, setAttendance] = useState<Attendance[]>([]);
   const [summary, setSummary] = useState<AttendanceSummary | null>(null);
+  const [results, setResults] = useState<ExamResult[]>([]);
+  const [cgpa, setCgpa] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,6 +36,11 @@ export default function StudentDashboard() {
           if (!active) return;
           setAttendance(rows);
           setSummary(summarizeAttendance(rows));
+          const marks = await listMarksForStudent(record.id).catch(() => []);
+          if (!active) return;
+          const built = buildResults(marks);
+          setResults(built.results);
+          setCgpa(built.cgpa);
         }
       })
       .catch(() => setStudent(null))
@@ -179,6 +187,60 @@ export default function StudentDashboard() {
             </div>
           </div>
 
+          <div className="card sms-card mb-4">
+            <div className="card-header bg-transparent d-flex align-items-center justify-content-between">
+              <span className="fw-semibold">Academic performance</span>
+              <Link to="/student/results" className="small text-decoration-none">
+                View full results
+              </Link>
+            </div>
+            <div className="card-body">
+              {results.length === 0 ? (
+                <p className="text-secondary small mb-0">No results have been published for you yet.</p>
+              ) : (
+                <>
+                  <div className="row g-3 mb-3">
+                    <div className="col-6 col-md-4">
+                      <div className="text-secondary small text-uppercase fw-semibold">CGPA</div>
+                      <div className="fs-3 fw-bold lh-1">{cgpa.toFixed(2)}</div>
+                    </div>
+                    <div className="col-6 col-md-4">
+                      <div className="text-secondary small text-uppercase fw-semibold">Latest GPA</div>
+                      <div className="fs-3 fw-bold lh-1">{results[0].gpa.toFixed(2)}</div>
+                    </div>
+                    <div className="col-12 col-md-4">
+                      <div className="text-secondary small text-uppercase fw-semibold">Latest exam</div>
+                      <div className="fw-semibold">{results[0].exam.title}</div>
+                      <div className="small text-secondary">{results[0].percentage}% overall</div>
+                    </div>
+                  </div>
+                  <div className="table-responsive">
+                    <table className="table table-sm align-middle mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th scope="col">Subject</th>
+                          <th scope="col" className="text-end">Marks</th>
+                          <th scope="col" className="text-end">Grade</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {results[0].subjects.slice(0, 5).map((s) => (
+                          <tr key={s.subject}>
+                            <td className="small">{s.subject}</td>
+                            <td className="text-end small">{s.obtained} / {s.max}</td>
+                            <td className="text-end">
+                              <span className="badge bg-primary-subtle text-primary-emphasis">{s.grade}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
           <div className="row g-3">
             <div className="col-12 col-lg-6">
               <div className="card sms-card h-100">
@@ -206,10 +268,16 @@ export default function StudentDashboard() {
                   <p className="small text-secondary">
                     Keep your contact details current so your institution can reach you.
                   </p>
-                  <Link to="/profile" className="btn btn-outline-primary btn-sm">
-                    <BsPersonCircle className="me-2" />
-                    Edit my profile
-                  </Link>
+                  <div className="d-flex flex-wrap gap-2">
+                    <Link to="/profile" className="btn btn-outline-primary btn-sm">
+                      <BsPersonCircle className="me-2" />
+                      Edit my profile
+                    </Link>
+                    <Link to="/student/results" className="btn btn-outline-secondary btn-sm">
+                      <BsAward className="me-2" />
+                      My results
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
