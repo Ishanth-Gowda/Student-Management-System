@@ -52,16 +52,18 @@ function StatCard({
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [activity, setActivity] = useState<ActivityLog[]>([]);
+  const [exams, setExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     let alive = true;
-    Promise.all([getDashboardStats(), listActivity(8)])
-      .then(([s, a]) => {
+    Promise.all([getDashboardStats(), listActivity(8), listExams().catch(() => [] as Exam[])])
+      .then(([s, a, e]) => {
         if (!alive) return;
         setStats(s);
         setActivity(a);
+        setExams(e);
       })
       .catch((e) => alive && setError(e instanceof Error ? e.message : "Failed to load dashboard"))
       .finally(() => alive && setLoading(false));
