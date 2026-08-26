@@ -128,10 +128,34 @@ const App = () => (
               }
             />
             <Route
+              path="/exams"
+              element={
+                <ProtectedRoute roles={["admin"]}>
+                  <Exams />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/exams/:id/marks"
+              element={
+                <ProtectedRoute roles={["admin"]}>
+                  <MarksEntry />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/student"
               element={
                 <ProtectedRoute roles={["student"]}>
                   <StudentDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/student/results"
+              element={
+                <ProtectedRoute roles={["student"]}>
+                  <StudentResults />
                 </ProtectedRoute>
               }
             />
