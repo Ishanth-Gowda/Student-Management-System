@@ -88,6 +88,50 @@ export type Database = {
           },
         ]
       }
+      courses: {
+        Row: {
+          code: string
+          created_at: string
+          department_id: string | null
+          description: string | null
+          duration_years: number
+          id: string
+          name: string
+          total_semesters: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          duration_years?: number
+          id?: string
+          name: string
+          total_semesters?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          duration_years?: number
+          id?: string
+          name?: string
+          total_semesters?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courses_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       departments: {
         Row: {
           code: string
@@ -161,6 +205,77 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "exams_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      faculty: {
+        Row: {
+          bio: string | null
+          created_at: string
+          deleted_at: string | null
+          department_id: string | null
+          designation: string | null
+          email: string
+          employee_id: string
+          first_name: string
+          id: string
+          joining_date: string | null
+          last_name: string
+          phone: string | null
+          photo_url: string | null
+          qualification: string | null
+          specialization: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          department_id?: string | null
+          designation?: string | null
+          email: string
+          employee_id: string
+          first_name: string
+          id?: string
+          joining_date?: string | null
+          last_name: string
+          phone?: string | null
+          photo_url?: string | null
+          qualification?: string | null
+          specialization?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          department_id?: string | null
+          designation?: string | null
+          email?: string
+          employee_id?: string
+          first_name?: string
+          id?: string
+          joining_date?: string | null
+          last_name?: string
+          phone?: string | null
+          photo_url?: string | null
+          qualification?: string | null
+          specialization?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faculty_department_id_fkey"
             columns: ["department_id"]
             isOneToOne: false
             referencedRelation: "departments"
@@ -374,6 +489,70 @@ export type Database = {
           },
         ]
       }
+      subjects: {
+        Row: {
+          code: string
+          course_id: string | null
+          created_at: string
+          credits: number
+          department_id: string | null
+          description: string | null
+          faculty_id: string | null
+          id: string
+          name: string
+          semester: number | null
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          course_id?: string | null
+          created_at?: string
+          credits?: number
+          department_id?: string | null
+          description?: string | null
+          faculty_id?: string | null
+          id?: string
+          name: string
+          semester?: number | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          course_id?: string | null
+          created_at?: string
+          credits?: number
+          department_id?: string | null
+          description?: string | null
+          faculty_id?: string | null
+          id?: string
+          name?: string
+          semester?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subjects_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subjects_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subjects_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "faculty"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -411,7 +590,7 @@ export type Database = {
       link_my_student_record: { Args: never; Returns: string }
     }
     Enums: {
-      app_role: "admin" | "student"
+      app_role: "admin" | "student" | "faculty" | "super_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -539,7 +718,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "student"],
+      app_role: ["admin", "student", "faculty", "super_admin"],
     },
   },
 } as const
