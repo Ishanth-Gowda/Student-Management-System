@@ -1,4 +1,56 @@
-export type AppRole = "admin" | "student";
+export type AppRole = "admin" | "student" | "faculty" | "super_admin";
+
+export interface Faculty {
+  id: string;
+  user_id: string | null;
+  employee_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string | null;
+  department_id: string | null;
+  designation: string | null;
+  qualification: string | null;
+  specialization: string | null;
+  joining_date: string | null;
+  status: string;
+  photo_url: string | null;
+  bio: string | null;
+  deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+  departments?: { id: string; name: string; code: string } | null;
+}
+
+export interface Course {
+  id: string;
+  name: string;
+  code: string;
+  department_id: string | null;
+  duration_years: number;
+  total_semesters: number;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+  departments?: { id: string; name: string; code: string } | null;
+}
+
+export interface Subject {
+  id: string;
+  name: string;
+  code: string;
+  department_id: string | null;
+  course_id: string | null;
+  faculty_id: string | null;
+  semester: number | null;
+  credits: number;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+  departments?: { id: string; name: string; code: string } | null;
+  courses?: { id: string; name: string; code: string } | null;
+  faculty?: { id: string; first_name: string; last_name: string } | null;
+}
 
 export type StudentStatus = "Active" | "Inactive" | "Graduated" | "Dropped";
 
