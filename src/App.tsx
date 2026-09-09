@@ -12,6 +12,9 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Departments from "./pages/admin/Departments";
+import Faculty from "./pages/admin/Faculty";
+import Courses from "./pages/admin/Courses";
+import Subjects from "./pages/admin/Subjects";
 import Attendance from "./pages/admin/Attendance";
 import Exams from "./pages/admin/Exams";
 import MarksEntry from "./pages/admin/MarksEntry";
@@ -84,6 +87,30 @@ const App = () => (
               element={
                 <ProtectedRoute roles={["admin"]}>
                   <Departments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/faculty"
+              element={
+                <ProtectedRoute roles={["admin", "super_admin"]}>
+                  <Faculty />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/courses"
+              element={
+                <ProtectedRoute roles={["admin", "super_admin"]}>
+                  <Courses />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/subjects"
+              element={
+                <ProtectedRoute roles={["admin", "super_admin"]}>
+                  <Subjects />
                 </ProtectedRoute>
               }
             />
