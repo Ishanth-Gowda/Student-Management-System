@@ -39,6 +39,8 @@ const LABELS: Record<string, string> = {
   exams: "Exams",
   marks: "Marks entry",
   results: "My results",
+  notices: "Notice board",
+  calendar: "Calendar",
   profile: "Profile",
   settings: "Settings",
   new: "Add Student",
@@ -62,6 +64,9 @@ export function DashboardLayout() {
 
   useEffect(() => {
     listActivity(5).then(setNotifications).catch(() => setNotifications([]));
+    Promise.all([listAnnouncements(), listReadAnnouncementIds()])
+      .then(([list, reads]) => setUnreadNotices(list.filter((a) => a.published && !reads.includes(a.id)).length))
+      .catch(() => setUnreadNotices(0));
   }, [location.pathname]);
 
   const handleLogout = async () => {
@@ -88,12 +93,16 @@ export function DashboardLayout() {
         { to: "/faculty", label: "Faculty", icon: BsPersonBadge },
         { to: "/courses", label: "Courses", icon: BsJournalBookmark },
         { to: "/subjects", label: "Subjects", icon: BsBook },
+        { to: "/notices", label: "Notice board", icon: BsMegaphone },
+        { to: "/calendar", label: "Calendar", icon: BsCalendar3 },
         { to: "/profile", label: "Profile", icon: BsPersonCircle },
         { to: "/settings", label: "Settings", icon: BsGear },
       ]
     : [
         { to: "/student", label: "Dashboard", icon: BsGrid1X2 },
         { to: "/student/results", label: "My results", icon: BsAward },
+        { to: "/notices", label: "Notice board", icon: BsMegaphone },
+        { to: "/calendar", label: "Calendar", icon: BsCalendar3 },
         { to: "/profile", label: "Profile", icon: BsPersonCircle },
         { to: "/settings", label: "Settings", icon: BsGear },
       ];
