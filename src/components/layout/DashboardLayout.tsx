@@ -9,6 +9,8 @@ import {
   BsJournalBookmark,
   BsPersonBadge,
   BsCalendarCheck,
+  BsCalendar3,
+  BsMegaphone,
   BsGear,
   BsGrid1X2,
   BsList,
