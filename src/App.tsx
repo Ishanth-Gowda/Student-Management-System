@@ -23,6 +23,8 @@ import StudentList from "./pages/students/StudentList";
 import StudentForm from "./pages/students/StudentForm";
 import StudentDetail from "./pages/students/StudentDetail";
 import StudentDashboard from "./pages/student/StudentDashboard";
+import Notices from "./pages/Notices";
+import CalendarPage from "./pages/Calendar";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Forbidden from "./pages/Forbidden";
@@ -186,6 +188,8 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route path="/notices" element={<Notices />} />
+            <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
           </Route>

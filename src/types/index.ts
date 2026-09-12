@@ -213,3 +213,47 @@ export interface ExamResult {
   percentage: number;
   gpa: number;
 }
+
+export interface Announcement {
+  id: string;
+  title: string;
+  body: string;
+  category: string;
+  audience: string;
+  priority: string;
+  department_id: string | null;
+  published: boolean;
+  publish_at: string;
+  expires_at: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+  departments?: { id: string; name: string; code: string } | null;
+}
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  event_type: string;
+  start_date: string;
+  end_date: string | null;
+  all_day: boolean;
+  start_time: string | null;
+  department_id: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+  departments?: { id: string; name: string; code: string } | null;
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string | null;
+  type: string;
+  link: string | null;
+  read: boolean;
+  created_at: string;
+}
