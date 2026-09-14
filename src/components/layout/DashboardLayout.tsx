@@ -25,6 +25,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Avatar } from "@/components/common/Avatar";
 import { listActivity } from "@/services/sms";
+import { listAnnouncements, listReadAnnouncementIds } from "@/services/notices";
 import type { ActivityLog } from "@/types";
 
 const LABELS: Record<string, string> = {
@@ -55,6 +56,7 @@ export function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [notifications, setNotifications] = useState<ActivityLog[]>([]);
+  const [unreadNotices, setUnreadNotices] = useState(0);
 
   const isAdmin = role === "admin";
 
@@ -121,6 +123,9 @@ export function DashboardLayout() {
           {links.map(({ to, label, icon: Icon }) => (
             <NavLink key={to} to={to} end className="nav-link d-flex align-items-center gap-2">
               <Icon aria-hidden="true" /> {label}
+              {to === "/notices" && unreadNotices > 0 && (
+                <span className="badge bg-danger rounded-pill ms-auto">{unreadNotices}</span>
+              )}
             </NavLink>
           ))}
           <button className="nav-link d-flex align-items-center gap-2 border-0 bg-transparent text-start" onClick={handleLogout}>
